@@ -8,10 +8,8 @@ export const domesticBrokers: Broker[] = [
 
     market: 'KR',
 
-    // 기본
     baseFeeRate: 0.00014,
 
-    // 이벤트
     eventFeeRate: 0.000063696,
 
     buyFeeRate: 0.000063696,
@@ -111,5 +109,49 @@ export const domesticBrokers: Broker[] = [
 
     note:
       '다이렉트 계좌 기준',
+  },
+
+  {
+    id: 'toss-kr',
+
+    name: '토스증권',
+
+    market: 'KR',
+
+    baseFeeRate: 0.00015,
+
+    eventFeeRate: 0.00015,
+
+    buyFeeRate: 0.00015,
+    sellFeeRate: 0.00015,
+
+    taxRate: 0.0023,
+
+    hasEvent: false,
+
+    note:
+      '간편 투자 UX 중심',
+  },
+
+  {
+    id: 'kakaopay-kr',
+
+    name: '카카오페이증권',
+
+    market: 'KR',
+
+    baseFeeRate: 0.00015,
+
+    eventFeeRate: 0.00015,
+
+    buyFeeRate: 0.00015,
+    sellFeeRate: 0.00015,
+
+    taxRate: 0.0023,
+
+    hasEvent: false,
+
+    note:
+      '카카오페이 연동 투자 서비스',
   },
 ]

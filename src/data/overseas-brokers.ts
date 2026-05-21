@@ -8,10 +8,8 @@ export const overseasBrokers: Broker[] = [
 
     market: 'US',
 
-    // 기본
     baseFeeRate: 0.0025,
 
-    // 이벤트
     eventFeeRate: 0.0007,
 
     buyFeeRate: 0.0007,
@@ -145,5 +143,29 @@ export const overseasBrokers: Broker[] = [
 
     note:
       '간편 투자 UX 특화',
+  },
+
+  {
+    id: 'kakaopay-us',
+
+    name: '카카오페이증권',
+
+    market: 'US',
+
+    baseFeeRate: 0.0025,
+
+    eventFeeRate: 0.0009,
+
+    buyFeeRate: 0.0009,
+    sellFeeRate: 0.0009,
+
+    exchangeFeeRate: 0.0005,
+
+    exchangeDiscountRate: 90,
+
+    hasEvent: true,
+
+    note:
+      '해외주식 이벤트 수수료 적용',
   },
 ]
