@@ -5,7 +5,7 @@ interface Params {
   buyFeeRate: number
   sellFeeRate: number
 
-  taxRate?: number
+  exchangeFeeRate?: number
 }
 
 export interface FeeResult {
@@ -22,15 +22,15 @@ export interface FeeResult {
   finalProfit: number
 }
 
-export function calculateFee({
-                               amount,
-                               profitRate,
+export function calculateUsFee({
+                                 amount,
+                                 profitRate,
 
-                               buyFeeRate,
-                               sellFeeRate,
+                                 buyFeeRate,
+                                 sellFeeRate,
 
-                               taxRate = 0,
-                             }: Params): FeeResult {
+                                 exchangeFeeRate = 0,
+                               }: Params): FeeResult {
   const sellAmount =
       amount * (1 + profitRate / 100)
 
@@ -39,22 +39,24 @@ export function calculateFee({
   const sellFee =
       sellAmount * sellFeeRate
 
-  const tax = sellAmount * taxRate
+  const exchangeFee =
+      amount * exchangeFeeRate
 
   const totalFee =
-      buyFee + sellFee + tax
+      buyFee +
+      sellFee +
+      exchangeFee
 
   const profit = sellAmount - amount
 
   const finalProfit = profit - totalFee
-
   return {
     buyFee,
     sellFee,
 
-    tax,
+    tax: 0,
 
-    exchangeFee: 0,
+    exchangeFee,
 
     totalFee,
 

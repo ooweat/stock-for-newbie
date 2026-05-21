@@ -6,7 +6,13 @@ import ProfitSlider from '../../widgets/calculator/ui/ProfitSlider'
 import BrokerCard from '../../widgets/calculator/ui/BrokerCard'
 
 import {domesticBrokers} from '../../data/domestic-brokers'
-import {calculateFee} from "../../shared/lib/calculateFee.ts";
+import {overseasBrokers} from '../../data/overseas-brokers'
+
+import {calculateFee,} from '../../shared/lib/calculateFee'
+import {calculateUsFee,} from '../../shared/lib/calculateUsFee'
+
+import useExchangeRate
+  from '../../shared/hooks/useExchangeRate'
 
 export default function HomePage() {
   const [market, setMarket] = useState<'KR' | 'US'>(
@@ -15,33 +21,85 @@ export default function HomePage() {
 
   const [amount, setAmount] = useState(10000000)
 
-  const [profitRate, setProfitRate] = useState(5)
+  const [profitRate, setProfitRate] = useState(10)
 
-  const sortedBrokers = [...domesticBrokers].sort(
+  const [feeViewType, setFeeViewType] =
+      useState<'TOTAL' | 'FEE'>('TOTAL')
+
+  const brokers =
+      market === 'KR'
+          ? domesticBrokers
+          : overseasBrokers
+
+  const [currency, setCurrency] =
+      useState<'KRW' | 'USD'>('KRW')
+
+  const sortedBrokers = [...brokers].sort(
       (a, b) => {
-        const aResult = calculateFee({
-          amount,
-          profitRate,
+        const aResult =
+            market === 'KR'
+                ? calculateFee({
+                  amount,
+                  profitRate,
 
-          buyFeeRate: a.buyFeeRate,
-          sellFeeRate: a.sellFeeRate,
+                  buyFeeRate:
+                  a.buyFeeRate,
 
-          taxRate: a.taxRate,
-        })
+                  sellFeeRate:
+                  a.sellFeeRate,
 
-        const bResult = calculateFee({
-          amount,
-          profitRate,
+                  taxRate: a.taxRate,
+                })
+                : calculateUsFee({
+                  amount,
+                  profitRate,
 
-          buyFeeRate: b.buyFeeRate,
-          sellFeeRate: b.sellFeeRate,
+                  buyFeeRate:
+                  a.buyFeeRate,
 
-          taxRate: b.taxRate,
-        })
+                  sellFeeRate:
+                  a.sellFeeRate,
 
-        return aResult.totalFee - bResult.totalFee
+                  exchangeFeeRate:
+                  a.exchangeFeeRate,
+                })
+
+        const bResult =
+            market === 'KR'
+                ? calculateFee({
+                  amount,
+                  profitRate,
+
+                  buyFeeRate:
+                  b.buyFeeRate,
+
+                  sellFeeRate:
+                  b.sellFeeRate,
+
+                  taxRate: b.taxRate,
+                })
+                : calculateUsFee({
+                  amount,
+                  profitRate,
+
+                  buyFeeRate:
+                  b.buyFeeRate,
+
+                  sellFeeRate:
+                  b.sellFeeRate,
+
+                  exchangeFeeRate:
+                  b.exchangeFeeRate,
+                })
+
+        return (
+            aResult.totalFee -
+            bResult.totalFee
+        )
       },
   )
+
+  const {rate, updatedAt, loading,} = useExchangeRate()
 
   return (
       <main className="min-h-screen bg-background">
@@ -56,8 +114,14 @@ export default function HomePage() {
           />
 
           <AmountInput
-              value={amount}
-              onChange={setAmount}
+            value={amount}
+            onChange={setAmount}
+            market={market}
+            currency={currency}
+            onCurrencyChange={setCurrency}
+            exchangeRate={rate}
+            updatedAt={updatedAt}
+            loading={loading}
           />
 
           <ProfitSlider
@@ -65,16 +129,69 @@ export default function HomePage() {
               onChange={setProfitRate}
           />
 
-          <div className="mt-4 flex flex-col gap-4">
-            {sortedBrokers.map((broker, index) => (
-                <BrokerCard
-                    key={broker.id}
-                    broker={broker}
-                    amount={amount}
-                    profitRate={profitRate}
-                    isBest={index === 0}
-                />
-            ))}
+          <div className="mt-4">
+            <div className="mb-3 text-xl font-bold">
+              증권사별 비교
+            </div>
+
+            <div className="flex rounded-xl bg-white p-1 shadow-sm">
+              <button
+                  onClick={() =>
+                      setFeeViewType('TOTAL')
+                  }
+                  className={`
+                flex-1
+                rounded-lg
+                py-2
+                text-sm
+                font-semibold
+
+                ${
+                      feeViewType === 'TOTAL'
+                          ? 'bg-primary text-white'
+                          : 'text-gray-500'
+                  }
+              `}
+              >
+                총 비용
+              </button>
+
+              <button
+                  onClick={() =>
+                      setFeeViewType('FEE')
+                  }
+                  className={`
+                flex-1
+                rounded-lg
+                py-2
+                text-sm
+                font-semibold
+
+                ${
+                      feeViewType === 'FEE'
+                          ? 'bg-primary text-white'
+                          : 'text-gray-500'
+                  }
+              `}
+              >
+                증권사 수수료만
+              </button>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-4">
+            {sortedBrokers.map(
+                (broker, index) => (
+                    <BrokerCard
+                        key={broker.id}
+                        broker={broker}
+                        amount={amount}
+                        profitRate={profitRate}
+                        isBest={index === 0}
+                        feeViewType={feeViewType}
+                    />
+                ),
+            )}
           </div>
         </div>
       </main>
