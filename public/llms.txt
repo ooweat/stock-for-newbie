@@ -1,0 +1,33 @@
+# Stock For Newbie
+
+Stock For Newbie is a stock brokerage fee calculator
+for beginner investors in Korea.
+
+The service compares:
+
+- Korean stock brokerage fees
+- US stock brokerage fees
+- Exchange fees
+- Tax costs
+- Event discount fees
+
+Main features:
+
+- Domestic stock fee comparison
+- US stock fee comparison
+- Exchange rate conversion
+- Real-time exchange rate
+- Profit simulation
+- Broker comparison
+
+Official website:
+https://stock-for-newbie.vercel.app
+
+Language:
+Korean
+
+Category:
+Finance
+Investment
+Brokerage
+Stock Trading

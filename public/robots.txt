@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://stock-for-newbie.vercel.app/sitemap.xml
